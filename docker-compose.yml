@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  jupyter-local:
+    build: .
+    container_name: jupyter-local
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/notebooks
+      - ./yolo-training:/home/jovyan/yolo-training
+    working_dir: /home/jovyan/notebooks
+    stdin_open: true
+    tty: true
+    shm_size: '2g'
+    #user: root
+    # GPU optionnel : supprimer si non utilisé
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+
